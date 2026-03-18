@@ -1,15 +1,21 @@
 """Turnstile Solver 进程管理 - 后端启动时自动拉起"""
+import os
 import subprocess
 import sys
-import os
-import time
 import threading
+import time
+
 import requests
 
 SOLVER_PORT = 8889
 SOLVER_URL = f"http://localhost:{SOLVER_PORT}"
+FALSE_VALUES = {"0", "false", "no", "off"}
 _proc: subprocess.Popen = None
 _lock = threading.Lock()
+
+
+def autostart_enabled() -> bool:
+    return os.getenv("ENABLE_SOLVER_AUTOSTART", "true").strip().lower() not in FALSE_VALUES
 
 
 def is_running() -> bool:
@@ -30,12 +36,10 @@ def start():
             os.path.dirname(__file__), "turnstile_solver", "start.py"
         )
         _proc = subprocess.Popen(
-            [sys.executable, solver_script,
-             "--browser_type", "camoufox"],
+            [sys.executable, solver_script, "--browser_type", "camoufox"],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
-        # 等待服务就绪（最多30s）
         for _ in range(30):
             time.sleep(1)
             if is_running():
@@ -55,6 +59,5 @@ def stop():
 
 
 def start_async():
-    """在后台线程启动，不阻塞主进程"""
     t = threading.Thread(target=start, daemon=True)
     t.start()

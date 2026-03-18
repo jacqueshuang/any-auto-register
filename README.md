@@ -54,6 +54,40 @@ cd ..
 
 浏览器访问 `http://localhost:8000`
 
+## Docker 镜像
+
+仓库已支持单镜像部署，前端会在构建阶段打包进镜像，由 FastAPI 统一提供页面和 `/api`。
+
+### 本地构建
+
+```bash
+docker build -t any-auto-register:local .
+```
+
+### 本地运行
+
+```bash
+docker run --rm -p 8000:8000 \
+  -e ENABLE_SOLVER_AUTOSTART=false \
+  -e DB_PATH=/app/data/account_manager.db \
+  -v $(pwd)/data:/app/data \
+  any-auto-register:local
+```
+
+说明：
+- `DB_PATH` 默认指向 `/app/data/account_manager.db`
+- 建议挂载 `/app/data`，避免 SQLite 数据在容器重建后丢失
+- 容器内默认关闭 solver 自动启动；如需开启，可显式传入 `-e ENABLE_SOLVER_AUTOSTART=true`
+
+## GitHub 自动构建镜像
+
+推送到 `main` 后，GitHub Actions 会自动构建并推送镜像到 GHCR：
+
+- 镜像地址：`ghcr.io/<你的 GitHub 用户名>/any-auto-register`
+- 默认标签：`latest`、`sha-<commit>`
+
+首次使用 GHCR 时，请确认仓库的 Actions 具备 `packages: write` 权限，并允许包可见性符合你的发布需求。
+
 ## 项目结构
 
 ```
