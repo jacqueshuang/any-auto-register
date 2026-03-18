@@ -15,6 +15,8 @@ from datetime import datetime
 
 from curl_cffi import requests as cffi_requests
 
+from core.base_mailbox import BaseMailbox
+
 from .oauth import OAuthManager, OAuthStart
 from .http_client import OpenAIHTTPClient, HTTPClientError
 # from ..services import EmailServiceFactory, BaseEmailService, EmailServiceType  # removed: external dep
@@ -90,7 +92,7 @@ class RegistrationEngine:
 
     def __init__(
         self,
-        email_service: BaseEmailService,
+        email_service: BaseMailbox,
         proxy_url: Optional[str] = None,
         callback_logger: Optional[Callable[[str], None]] = None,
         task_uuid: Optional[str] = None
