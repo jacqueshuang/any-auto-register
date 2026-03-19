@@ -19,9 +19,6 @@ from core.base_mailbox import BaseMailbox
 
 from .oauth import OAuthManager, OAuthStart
 from .http_client import OpenAIHTTPClient, HTTPClientError
-# from ..services import EmailServiceFactory, BaseEmailService, EmailServiceType  # removed: external dep
-# from ..database import crud  # removed: external dep
-# from ..database.session import get_db  # removed: external dep
 from .constants import (
     OPENAI_API_ENDPOINTS,
     OPENAI_PAGE_TYPES,
@@ -140,7 +137,7 @@ class RegistrationEngine:
         """记录日志"""
         timestamp = datetime.now().strftime("%H:%M:%S")
         log_message = f"[{timestamp}] {message}"
-
+        print(log_message)
         # 添加到日志列表
         self.logs.append(log_message)
 
@@ -164,6 +161,7 @@ class RegistrationEngine:
         else:
             logger.info(message)
 
+
     def _generate_password(self, length: int = DEFAULT_PASSWORD_LENGTH) -> str:
         """生成随机密码"""
         return ''.join(secrets.choice(PASSWORD_CHARSET) for _ in range(length))
@@ -179,8 +177,8 @@ class RegistrationEngine:
     def _create_email(self) -> bool:
         """创建邮箱"""
         try:
-            self._log(f"正在创建 {self.email_service.service_type.value} 邮箱...")
-            self.email_info = self.email_service.create_email()
+            self._log(f"正在创建 邮箱...")
+            self.email_info = vars(self.email_service.get_email())
 
             if not self.email_info or "email" not in self.email_info:
                 self._log("创建邮箱失败: 返回信息不完整", "error")

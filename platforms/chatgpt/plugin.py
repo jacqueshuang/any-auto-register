@@ -45,7 +45,6 @@ class ChatGPTPlatform(BasePlatform):
             email = email or mail_acct.email
             _mailbox = self.mailbox
             _mail_acct = mail_acct
-
             class LaoудоEmailService:
                 service_type = type('ST', (), {'value': 'laoudo'})()
                 def create_email(self, config=None):
@@ -55,9 +54,13 @@ class ChatGPTPlatform(BasePlatform):
                 def update_status(self, success, error=None): pass
                 @property
                 def status(self): return None
-
+        elif mail_provider == 'duckmail' and self.mailbox:
+            mail_acct = self.mailbox.get_email()
+            email = email or mail_acct.email
+            _mailbox = self.mailbox
+            _mail_acct = mail_acct
             engine = RegistrationEngine(
-                email_service=LaoудоEmailService(),
+                email_service=_mailbox,
                 proxy_url=proxy, callback_logger=log_fn)
             engine.email = email
             engine.password = password
