@@ -15,6 +15,7 @@ from datetime import datetime
 
 from curl_cffi import requests as cffi_requests
 
+import core.config_store
 from core.base_mailbox import BaseMailbox, MailboxAccount
 
 from .oauth import OAuthManager, OAuthStart
@@ -803,7 +804,7 @@ class RegistrationEngine:
 
             result.success = True
             result.metadata = {
-                "email_service": self.email_service.service_type.value,
+                "email_service": 'x',
                 "proxy_used": self.proxy_url,
                 "registered_at": datetime.now().isoformat(),
                 "is_existing_account": self._is_existing_account,
