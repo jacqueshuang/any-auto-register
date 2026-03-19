@@ -145,17 +145,17 @@ def generate_team_link(
     price_interval: str = "month",
     seat_quantity: int = 5,
     proxy: Optional[str] = None,
-    country: str = "SG",
+    country: str = "US",
 ) -> str:
     """生成 Team 支付链接（后端携带账号 cookie 发请求）"""
-    if not account.access_token:
+    if not account.token:
         raise ValueError("账号缺少 access_token")
 
     currency = _COUNTRY_CURRENCY_MAP.get(country, "USD")
     headers = {
-        "Authorization": f"Bearer {account.access_token}",
+        "Authorization": f"Bearer {account.token}",
         "Content-Type": "application/json",
-        "oai-language": "zh-CN",
+        "oai-language": "en-US",
     }
     if account.cookies:
         headers["cookie"] = account.cookies

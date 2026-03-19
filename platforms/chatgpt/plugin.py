@@ -153,7 +153,7 @@ class ChatGPTPlatform(BasePlatform):
 
         elif action_id == "payment_link":
             from platforms.chatgpt.payment import generate_plus_link, generate_team_link
-            plan = params.get("plan", "plus")
+            plan = params.get("plan", "team")
             country = params.get("country", "US")
             if plan == "plus":
                 url = generate_plus_link(a, proxy=proxy, country=country)
