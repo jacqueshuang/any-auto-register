@@ -15,7 +15,7 @@ from datetime import datetime
 
 from curl_cffi import requests as cffi_requests
 
-from core.base_mailbox import BaseMailbox
+from core.base_mailbox import BaseMailbox, MailboxAccount
 
 from .oauth import OAuthManager, OAuthStart
 from .http_client import OpenAIHTTPClient, HTTPClientError
@@ -420,12 +420,10 @@ class RegistrationEngine:
             self._log(f"正在等待邮箱 {self.email} 的验证码...")
 
             email_id = self.email_info.get("service_id") if self.email_info else None
-            code = self.email_service.get_verification_code(
-                email=self.email,
-                email_id=email_id,
+            code = self.email_service.wait_for_code(
+                account=MailboxAccount(**self.email_info),
                 timeout=120,
-                pattern=OTP_CODE_PATTERN,
-                otp_sent_at=self._otp_sent_at,
+
             )
 
             if code:
